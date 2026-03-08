@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Geist Mono (pre-bundled) ─────────────────────── */
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/assets/fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── JetBrains Mono (pre-bundled) ─────────────────── */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono-Variable.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Mona Sans (pre-bundled) ──────────────────────── */
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/assets/fonts/MonaSans-Variable.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Bricolage Grotesque (pre-bundled) ────────────── */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* ── Speedometer dark theme tokens ── */
+    --background: 0.07 0 0;
+    --foreground: 0.95 0 0;
+    --card: 0.1 0 0;
+    --card-foreground: 0.95 0 0;
+    --popover: 0.12 0 0;
+    --popover-foreground: 0.95 0 0;
+    --primary: 0.82 0.18 142;
+    --primary-foreground: 0.07 0 0;
+    --secondary: 0.15 0 0;
+    --secondary-foreground: 0.9 0 0;
+    --muted: 0.15 0 0;
+    --muted-foreground: 0.55 0 0;
+    --accent: 0.82 0.18 142;
+    --accent-foreground: 0.07 0 0;
+    --destructive: 0.62 0.24 27;
+    --destructive-foreground: 0.95 0 0;
+    --border: 0.25 0 0;
+    --input: 0.2 0 0;
+    --ring: 0.82 0.18 142;
+
+    /* ── Neon accent colors (raw values for OKLCH) ── */
+    --neon-green: 0.82 0.22 142;
+    --neon-red: 0.62 0.24 27;
+    --neon-blue: 0.72 0.18 230;
+    --neon-orange: 0.75 0.2 55;
+    --neon-purple: 0.65 0.22 305;
+    --neon-white: 0.97 0 0;
+
+    /* ── Chart (unused but required) ── */
+    --chart-1: 0.82 0.22 142;
+    --chart-2: 0.62 0.24 27;
+    --chart-3: 0.72 0.18 230;
+    --chart-4: 0.75 0.2 55;
+    --chart-5: 0.65 0.22 305;
+
+    /* ── Sidebar ── */
+    --sidebar: 0.1 0 0;
+    --sidebar-foreground: 0.95 0 0;
+    --sidebar-primary: 0.82 0.22 142;
+    --sidebar-primary-foreground: 0.07 0 0;
+    --sidebar-accent: 0.15 0 0;
+    --sidebar-accent-foreground: 0.9 0 0;
+    --sidebar-border: 0.25 0 0;
+    --sidebar-ring: 0.82 0.22 142;
+  }
+
+  /* Dark is the only mode for this app */
+  .dark {
+    --background: 0.07 0 0;
+    --foreground: 0.95 0 0;
+    --card: 0.1 0 0;
+    --card-foreground: 0.95 0 0;
+    --popover: 0.12 0 0;
+    --popover-foreground: 0.95 0 0;
+    --primary: 0.82 0.18 142;
+    --primary-foreground: 0.07 0 0;
+    --secondary: 0.15 0 0;
+    --secondary-foreground: 0.9 0 0;
+    --muted: 0.15 0 0;
+    --muted-foreground: 0.55 0 0;
+    --accent: 0.82 0.18 142;
+    --accent-foreground: 0.07 0 0;
+    --destructive: 0.62 0.24 27;
+    --destructive-foreground: 0.95 0 0;
+    --border: 0.25 0 0;
+    --input: 0.2 0 0;
+    --ring: 0.82 0.18 142;
+    --chart-1: 0.82 0.22 142;
+    --chart-2: 0.62 0.24 27;
+    --chart-3: 0.72 0.18 230;
+    --chart-4: 0.75 0.2 55;
+    --chart-5: 0.65 0.22 305;
+    --sidebar: 0.1 0 0;
+    --sidebar-foreground: 0.95 0 0;
+    --sidebar-primary: 0.82 0.22 142;
+    --sidebar-primary-foreground: 0.07 0 0;
+    --sidebar-accent: 0.15 0 0;
+    --sidebar-accent-foreground: 0.9 0 0;
+    --sidebar-border: 0.25 0 0;
+    --sidebar-ring: 0.82 0.22 142;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Mona Sans", sans-serif;
+    overflow: hidden;
+  }
+}
+
+/* ── Neon glow keyframes ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+.settings-panel-enter {
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.settings-panel-exit {
+  animation: slide-out-right 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+/* Landscape orientation lock — hide everything in portrait */
+@media (orientation: portrait) {
+  /* Let React handle this via JS — we keep the portrait overlay visible */
+}
