@@ -8,6 +8,15 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
+// Register PWA service worker for offline support
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      // Service worker registration failed — app still works online
+    });
+  });
+}
+
 declare global {
   interface BigInt {
     toJSON(): string;

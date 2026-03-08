@@ -22,7 +22,7 @@ const THEME_GLOW: Record<string, string> = {
 
 export default function App() {
   const { settings, updateSettings } = useSettings();
-  const { speedMps, error, permissionDenied } = useGeolocation();
+  const { speedMps, error, permissionDenied, acquiring } = useGeolocation();
   const { isPortrait } = useOrientation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mode, setMode] = useState<SpeedMode>("ECO");
@@ -96,6 +96,7 @@ export default function App() {
             theme={settings.theme}
             skin={settings.skin}
             maxSpeed={maxSpeed}
+            acquiring={acquiring}
           />
         </div>
 

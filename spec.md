@@ -1,27 +1,37 @@
 # Gotrax Swift Z4 Speedometer
 
 ## Current State
-A landscape-only GPS speedometer PWA for the Gotrax Swift Z4 scooter. Features an SVG arc gauge, 4 skins, 6 color themes, ECO/SPORT/STREET mode selector, live clock, battery indicator, and a settings panel. Settings are persisted in localStorage. The app currently has no service worker or web app manifest, so it cannot be installed or used offline.
+- React + Vite frontend with a full-screen SVG arc speedometer gauge
+- GPS speed via `navigator.geolocation.watchPosition` in `useGeolocation.ts`
+- Settings (theme, skin, unit) persisted in localStorage
+- Battery display, live clock, speed mode tabs, portrait block overlay
+- PWA icons already generated (192px and 512px)
+- `index.html` has Apple mobile-web-app meta tags but NO `manifest.json` link and NO service worker
 
 ## Requested Changes (Diff)
 
 ### Add
-- Web App Manifest (`manifest.webmanifest`) with app name, icons, display mode, orientation lock, and theme color so the app is installable on iOS and Android
-- Service Worker (`sw.js`) using a cache-first strategy to cache all app assets (HTML, JS, CSS, fonts) so the app loads and runs fully offline after first visit
-- Registration of the service worker in `main.tsx`
-- App icons (192x192 and 512x512) for the manifest
-- `<link rel="manifest">` and apple-touch-icon meta tags in `index.html`
+- `public/manifest.json` — full Web App Manifest (name, icons, display, orientation, theme_color, start_url)
+- `public/sw.js` — service worker with cache-first strategy, caching all app shell assets on install
+- `<link rel="manifest" href="/manifest.json">` in `index.html`
+- Service worker registration in `main.tsx` (registers `sw.js` after page load)
+- "Searching for GPS..." state in `SpeedometerGauge.tsx` / `App.tsx`: shown when `speedMps === null` and no error (GPS acquiring lock), distinct from error states
 
 ### Modify
-- `vite.config.js` — add `vite-plugin-pwa` to auto-generate service worker and manifest, OR manually wire the service worker and manifest files
-- `index.html` — add manifest link, apple-touch-icon, and mobile-web-app-capable meta tags
+- `index.html`: add manifest link tag
+- `main.tsx`: register service worker after app mounts
+- `App.tsx`: pass GPS-acquiring state to gauge for "Searching for GPS..." display
+- `useGeolocation.ts`: add `acquiring` boolean flag (true while waiting for first fix, false once speed arrives or error occurs)
+- `SpeedometerGauge.tsx`: accept `acquiring` prop and render "Searching for GPS..." overlay text instead of "0" when acquiring
 
 ### Remove
 - Nothing removed
 
 ## Implementation Plan
-1. Install `vite-plugin-pwa` as a dev dependency
-2. Generate app icons (192x192 and 512x512 PNG) using the image generation tool
-3. Configure `vite-plugin-pwa` in `vite.config.js` with manifest metadata, icon paths, and a `GenerateSW` workbox strategy caching all static assets
-4. Add `<link rel="manifest">` and iOS PWA meta tags to `index.html`
-5. Validate and build
+1. Create `src/frontend/public/manifest.json` with all required PWA fields, pointing to existing icons
+2. Create `src/frontend/public/sw.js` with install/activate/fetch handlers caching app shell (cache-first with network fallback)
+3. Add `<link rel="manifest">` to `index.html`
+4. Add service worker registration code to `main.tsx`
+5. Update `useGeolocation.ts` to expose `acquiring: boolean` (true until first position or error)
+6. Update `App.tsx` to pass `acquiring` to `SpeedometerGauge`
+7. Update `SpeedometerGauge.tsx` to show "Searching for GPS..." label when acquiring

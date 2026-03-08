@@ -4,6 +4,8 @@ export interface GeolocationState {
   speedMps: number | null;
   error: string | null;
   permissionDenied: boolean;
+  /** True while waiting for the first GPS fix (no position or error yet) */
+  acquiring: boolean;
 }
 
 export function useGeolocation(): GeolocationState {
@@ -11,6 +13,7 @@ export function useGeolocation(): GeolocationState {
     speedMps: null,
     error: null,
     permissionDenied: false,
+    acquiring: true,
   });
 
   const watchIdRef = useRef<number | null>(null);
@@ -21,6 +24,7 @@ export function useGeolocation(): GeolocationState {
         speedMps: null,
         error: "Geolocation not supported",
         permissionDenied: false,
+        acquiring: false,
       });
       return;
     }
@@ -31,6 +35,7 @@ export function useGeolocation(): GeolocationState {
           speedMps: position.coords.speed,
           error: null,
           permissionDenied: false,
+          acquiring: false,
         });
       },
       (err) => {
@@ -39,6 +44,7 @@ export function useGeolocation(): GeolocationState {
           speedMps: null,
           error: err.message,
           permissionDenied: denied,
+          acquiring: false,
         });
       },
       {

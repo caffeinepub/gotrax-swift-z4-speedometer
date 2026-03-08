@@ -8,6 +8,8 @@ interface SpeedometerGaugeProps {
   theme: SpeedTheme;
   skin: SpeedSkin;
   maxSpeed?: number;
+  /** True while waiting for the first GPS fix */
+  acquiring?: boolean;
 }
 
 /** Smoothly animate a numeric value using requestAnimationFrame */
@@ -112,6 +114,7 @@ export function SpeedometerGauge({
   theme,
   skin,
   maxSpeed,
+  acquiring = false,
 }: SpeedometerGaugeProps) {
   const max = maxSpeed ?? (unit === "mph" ? 60 : 100);
   const primaryColor = THEME_COLORS[theme];
@@ -408,45 +411,92 @@ export function SpeedometerGauge({
         strokeOpacity="0.15"
       />
 
-      {/* Speed number */}
-      <text
-        x={cx}
-        y={cy - 16}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={isDigital ? 72 : 80}
-        fontFamily={numberFontFamily}
-        fontWeight={isDigital ? "700" : "800"}
-        letterSpacing={isDigital ? "-2" : "-4"}
-        fill={primaryColor}
-        filter={applyStrongGlow ? strongGlowFilter : undefined}
-        style={{
-          userSelect: "none",
-          paintOrder: "stroke fill",
-        }}
-      >
-        {Math.round(speed)}
-      </text>
+      {/* Speed number — hidden while acquiring GPS */}
+      {!acquiring && (
+        <text
+          x={cx}
+          y={cy - 16}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={isDigital ? 72 : 80}
+          fontFamily={numberFontFamily}
+          fontWeight={isDigital ? "700" : "800"}
+          letterSpacing={isDigital ? "-2" : "-4"}
+          fill={primaryColor}
+          filter={applyStrongGlow ? strongGlowFilter : undefined}
+          style={{
+            userSelect: "none",
+            paintOrder: "stroke fill",
+          }}
+        >
+          {Math.round(speed)}
+        </text>
+      )}
 
-      {/* Primary unit label */}
-      <text
-        x={cx}
-        y={cy + 36}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={14}
-        fontFamily={fontFamily}
-        fontWeight="600"
-        letterSpacing="4"
-        fill={primaryColor}
-        fillOpacity={0.6}
-        filter={glowFilter}
-      >
-        {unit.toUpperCase()}
-      </text>
+      {/* Searching for GPS indicator */}
+      {acquiring && (
+        <>
+          <text
+            x={cx}
+            y={cy - 20}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={13}
+            fontFamily={fontFamily}
+            fontWeight="500"
+            letterSpacing="1"
+            fill={primaryColor}
+            fillOpacity={0.55}
+            filter={glowFilter}
+          >
+            Searching for GPS...
+          </text>
+          {/* Subtle pulsing dot row */}
+          <circle
+            cx={cx - 12}
+            cy={cy + 8}
+            r={3}
+            fill={primaryColor}
+            fillOpacity={0.3}
+          />
+          <circle
+            cx={cx}
+            cy={cy + 8}
+            r={3}
+            fill={primaryColor}
+            fillOpacity={0.3}
+          />
+          <circle
+            cx={cx + 12}
+            cy={cy + 8}
+            r={3}
+            fill={primaryColor}
+            fillOpacity={0.3}
+          />
+        </>
+      )}
+
+      {/* Primary unit label — hidden while acquiring */}
+      {!acquiring && (
+        <text
+          x={cx}
+          y={cy + 36}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={14}
+          fontFamily={fontFamily}
+          fontWeight="600"
+          letterSpacing="4"
+          fill={primaryColor}
+          fillOpacity={0.6}
+          filter={glowFilter}
+        >
+          {unit.toUpperCase()}
+        </text>
+      )}
 
       {/* Secondary unit (other speed) */}
-      {secondaryVal !== null && (
+      {!acquiring && secondaryVal !== null && (
         <text
           x={cx}
           y={cy + 58}
