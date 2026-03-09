@@ -13,7 +13,7 @@ interface SpeedometerGaugeProps {
 }
 
 /** Smoothly animate a numeric value using requestAnimationFrame */
-function useAnimatedValue(target: number, durationMs = 300): number {
+function useAnimatedValue(target: number, durationMs = 80): number {
   const [current, setCurrent] = useState(target);
   const animRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
@@ -38,9 +38,8 @@ function useAnimatedValue(target: number, durationMs = 300): number {
       if (startRef.current === null) startRef.current = ts;
       const elapsed = ts - startRef.current;
       const t = Math.min(elapsed / durationRef.current, 1);
-      // Ease out cubic
-      const eased = 1 - (1 - t) ** 3;
-      const val = fromRef.current + (toRef.current - fromRef.current) * eased;
+      // Linear — snaps directly to new value within durationMs
+      const val = fromRef.current + (toRef.current - fromRef.current) * t;
       setCurrent(val);
       if (t < 1) {
         animRef.current = requestAnimationFrame(step);
@@ -120,8 +119,8 @@ export function SpeedometerGauge({
   const primaryColor = THEME_COLORS[theme];
   const trackColor = TRACK_COLORS[theme];
 
-  // Smooth animated display speed
-  const animatedSpeed = useAnimatedValue(Math.max(speed, 0), 250);
+  // Smooth animated display speed — 80ms linear for near-instant response
+  const animatedSpeed = useAnimatedValue(Math.max(speed, 0), 80);
   const clampedSpeed = Math.min(animatedSpeed, max);
 
   // Secondary unit values (always show both)
